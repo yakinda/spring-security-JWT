@@ -11,6 +11,7 @@ import com.thanhnguyen.security.services.UserService;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -32,25 +33,48 @@ public class UserResource {
     private final UserService userService;
 
     @GetMapping("/users")
+    @PreAuthorize("hasAuthority('ROLE_USER')")
     ResponseEntity<List<User>> getUsers() {
         return ResponseEntity.ok().body(userService.getUsers());
     }
 
     @PostMapping("user/create")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER_ADMIN')")
     ResponseEntity<User> createUser(@RequestBody User user) {
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/user/create").toUriString());
         return ResponseEntity.created(uri).body(userService.saveUser(user));
     }
 
+    @PreAuthorize("hasAnyAuthority('ROLE_SUPER_ADMIN')")
     @PostMapping("role/create")
     ResponseEntity<Role> createUser(@RequestBody Role role) {
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/role/create").toUriString());
         return ResponseEntity.created(uri).body(userService.saveRole(role));
     }
 
+    @PreAuthorize("hasAnyAuthority('ROLE_SUPER_ADMIN')")
     @PostMapping("/role/addUser")
     ResponseEntity<?> addRoleToUser(@RequestBody RoleUser data) {
         userService.setRoleToUser(data.getUsername(), data.getRoleName());
+        return ResponseEntity.ok().build();
+    }
+
+    @PreAuthorize("hasAuthority('ROLE_USER')")
+    @PostMapping("/user/edit")
+    ResponseEntity<?> editUser(@RequestBody User user, HttpServletRequest request) {
+        String authorizationHeaders = request.getHeader(AUTHORIZATION);
+        if (authorizationHeaders != null && authorizationHeaders.startsWith("Bearer ")) {
+            try {
+                String token = authorizationHeaders.split(" ")[1];
+                Algorithm algorithm = Algorithm.HMAC256("thanhsecret".getBytes());
+                JWTVerifier verifier = JWT.require(algorithm).build();
+                DecodedJWT decodedJWT = verifier.verify(token);
+                String username = decodedJWT.getSubject();
+                userService.editUser(username, user);
+            } catch (Exception exception) {
+                return ResponseEntity.badRequest().build();
+            }
+        }
         return ResponseEntity.ok().build();
     }
 
@@ -97,4 +121,3 @@ class RoleUser {
     private String roleName;
 
 }
-

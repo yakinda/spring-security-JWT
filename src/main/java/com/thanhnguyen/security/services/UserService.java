@@ -14,5 +14,7 @@ public interface UserService {
 
     User getUser(String username);
 
+    User editUser(String username,User userRequest);
+
     List<User> getUsers();
 }

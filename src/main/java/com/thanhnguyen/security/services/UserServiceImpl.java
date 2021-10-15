@@ -76,5 +76,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return userRepo.findAll();
     }
 
-
+    @Override
+    public User editUser(String username, User userRequest) {
+        User user = userRepo.findByUsername(username);
+        user.setName(userRequest.getName());
+        return userRepo.save(user);
+    }
 }
