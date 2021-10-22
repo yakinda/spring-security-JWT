@@ -5,6 +5,7 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.thanhnguyen.security.constants.CONSTANTS;
 import com.thanhnguyen.security.models.Role;
 import com.thanhnguyen.security.models.User;
 import com.thanhnguyen.security.services.UserService;
@@ -33,7 +34,7 @@ public class UserResource {
     private final UserService userService;
 
     @GetMapping("/users")
-    @PreAuthorize("hasAuthority('ROLE_USER')")
+    @PreAuthorize("hasAuthority('" + CONSTANTS.ROLE_USER + "')")
     ResponseEntity<List<User>> getUsers() {
         return ResponseEntity.ok().body(userService.getUsers());
     }
@@ -61,20 +62,8 @@ public class UserResource {
 
     @PreAuthorize("hasAuthority('ROLE_USER')")
     @PostMapping("/user/edit")
-    ResponseEntity<?> editUser(@RequestBody User user, HttpServletRequest request) {
-        String authorizationHeaders = request.getHeader(AUTHORIZATION);
-        if (authorizationHeaders != null && authorizationHeaders.startsWith("Bearer ")) {
-            try {
-                String token = authorizationHeaders.split(" ")[1];
-                Algorithm algorithm = Algorithm.HMAC256("thanhsecret".getBytes());
-                JWTVerifier verifier = JWT.require(algorithm).build();
-                DecodedJWT decodedJWT = verifier.verify(token);
-                String username = decodedJWT.getSubject();
-                userService.editUser(username, user);
-            } catch (Exception exception) {
-                return ResponseEntity.badRequest().build();
-            }
-        }
+    ResponseEntity<?> editUser(@RequestBody User user, @RequestAttribute("username") String username) {
+        userService.editUser(username, user);
         return ResponseEntity.ok().build();
     }
 
@@ -84,7 +73,7 @@ public class UserResource {
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             try {
                 String refresh_token = authorizationHeader.split(" ")[1];
-                Algorithm algorithm = Algorithm.HMAC256("thanhsecret".getBytes());
+                Algorithm algorithm = Algorithm.HMAC512(CONSTANTS.MY_SECRET);
                 JWTVerifier verifier = JWT.require(algorithm).build();
                 DecodedJWT decodedJWT = verifier.verify(refresh_token);
                 String username = decodedJWT.getSubject();

@@ -11,6 +11,8 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Entity
 public class Role {
+
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
