@@ -42,14 +42,16 @@ public class UserResource {
     @PostMapping("user/create")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER_ADMIN')")
     ResponseEntity<User> createUser(@RequestBody User user) {
-        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/user/create").toUriString());
+        URI uri = URI
+                .create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/user/create").toUriString());
         return ResponseEntity.created(uri).body(userService.saveUser(user));
     }
 
     @PreAuthorize("hasAnyAuthority('ROLE_SUPER_ADMIN')")
     @PostMapping("role/create")
     ResponseEntity<Role> createUser(@RequestBody Role role) {
-        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/role/create").toUriString());
+        URI uri = URI
+                .create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/role/create").toUriString());
         return ResponseEntity.created(uri).body(userService.saveRole(role));
     }
 
@@ -78,8 +80,7 @@ public class UserResource {
                 DecodedJWT decodedJWT = verifier.verify(refresh_token);
                 String username = decodedJWT.getSubject();
                 User user = userService.getUser(username);
-                String access_token = JWT.create()
-                        .withSubject(user.getUsername())
+                String access_token = JWT.create().withSubject(user.getUsername())
                         .withExpiresAt(new Date(System.currentTimeMillis() + 10 * 60 * 1000))
                         .withIssuer(request.getRequestURL().toString())
                         .withClaim("roles", user.getRoles().stream().map(Role::getName).collect(Collectors.toList()))

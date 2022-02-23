@@ -23,6 +23,7 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 public class UserService implements UserDetailsService {
+
     private final UserRepo userRepo;
     private final RoleRepo roleRepo;
     private final PasswordEncoder passwordEncoder;
@@ -39,7 +40,8 @@ public class UserService implements UserDetailsService {
         user.getRoles().forEach(role -> {
             authorities.add(new SimpleGrantedAuthority(role.getName()));
         });
-        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authorities);
+        return new org.springframework.security.core.userdetails.User(user.getUsername(),
+                user.getPassword(), authorities);
     }
 
     public User saveUser(User user) {
