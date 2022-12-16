@@ -11,3 +11,13 @@ spring:
     spring.h2.console.settings.web-allow-others: false
   jpa:
     spring.jpa.database-platform: org.hibernate.dialect.H2Dialect
+  http:
+    encoding:
+      charset: UTF-8
+server:
+  port: ${PORT:8090}
+  ssl:
+    enabled: true
+    key-store: classpath:springapp.jks
+    key-store-password: thanhnd
+    key-alias: springapp
