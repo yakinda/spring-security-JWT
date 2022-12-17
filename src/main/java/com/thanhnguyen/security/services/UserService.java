@@ -1,5 +1,6 @@
 package com.thanhnguyen.security.services;
 
+import com.thanhnguyen.security.constants.CONSTANTS;
 import com.thanhnguyen.security.models.Role;
 import com.thanhnguyen.security.models.User;
 import com.thanhnguyen.security.repositories.RoleRepo;
@@ -47,7 +48,7 @@ public class UserService implements UserDetailsService {
     public User saveUser(User user) {
         log.info("Saving new user {} to database", user.getUsername());
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return userRepo.save(user);
+        return userRepo.saveAndFlush(user);
     }
 
     public Role saveRole(Role role) {
@@ -76,5 +77,13 @@ public class UserService implements UserDetailsService {
         User user = userRepo.findByUsername(username);
         user.setName(userRequest.getName());
         return userRepo.save(user);
+    }
+
+    public User signup(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        User userEntity = userRepo.save(user);
+        Role defaultRole = roleRepo.findByName(CONSTANTS.ROLE_USER);
+        userEntity.getRoles().add(defaultRole);
+        return userRepo.saveAndFlush(userEntity);
     }
 }

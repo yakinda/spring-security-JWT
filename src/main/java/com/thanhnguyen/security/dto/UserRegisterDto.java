@@ -5,6 +5,7 @@ import com.thanhnguyen.security.models.User;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.Collections;
 
 @Getter
@@ -21,13 +22,11 @@ public class UserRegisterDto {
     }
 
     public User toUser() {
-        Role roleDefault = new Role();
-        roleDefault.setName("ROLE_USER");
         User user = new User();
         user.setUsername(this.username);
         user.setPassword(this.password);
         user.setName(this.name);
-        user.setRoles(Collections.singletonList(roleDefault));
+        user.setRoles(new ArrayList<>());
         return user;
     }
 }

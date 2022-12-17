@@ -8,6 +8,7 @@ import com.thanhnguyen.security.security.JWTUtils;
 import com.thanhnguyen.security.services.UserService;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -30,14 +31,16 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
-public class UserResource {
+@Slf4j
+public class UserResource implements BaseController {
     private final UserService userService;
 
     private final JWTUtils jwtUtils;
 
     @GetMapping("/users")
-    @PreAuthorize("hasAuthority('" + CONSTANTS.ROLE_USER + "')")
+    @PreAuthorize("hasAuthority('" + CONSTANTS.ROLE_SUPER_ADMIN + "')")
     ResponseEntity<List<User>> getUsers() {
+        log.info(this.uid());
         return ResponseEntity.ok().body(userService.getUsers());
     }
 

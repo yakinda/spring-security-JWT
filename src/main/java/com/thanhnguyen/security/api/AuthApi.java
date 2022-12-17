@@ -19,10 +19,11 @@ import java.net.URI;
 public class AuthApi {
 
     private final UserService userService;
+
     @PostMapping("/register")
     ResponseEntity<User> register(@RequestBody UserRegisterDto user) {
         URI uri = URI
                 .create(ServletUriComponentsBuilder.fromCurrentContextPath().path("api/v1/auth/register").toUriString());
-        return ResponseEntity.created(uri).body(userService.saveUser(user.toUser()));
+        return ResponseEntity.created(uri).body(userService.signup(user.toUser()));
     }
 }

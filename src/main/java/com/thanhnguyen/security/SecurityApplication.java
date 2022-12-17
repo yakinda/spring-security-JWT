@@ -21,14 +21,13 @@ public class SecurityApplication {
     @Bean
     CommandLineRunner run(UserService userService) {
         return args -> {
-
             userService.saveRole(new Role(null, CONSTANTS.ROLE_USER));
             userService.saveRole(new Role(null, CONSTANTS.ROLE_ADMIN));
             userService.saveRole(new Role(null, CONSTANTS.ROLE_MANAGER));
             userService.saveRole(new Role(null, CONSTANTS.ROLE_SUPER_ADMIN));
-            userService.saveUser(new User(null, "thanh", "123", "Thanh", new ArrayList<>()));
-            userService.setRoleToUser("thanh", CONSTANTS.ROLE_SUPER_ADMIN);
-            userService.setRoleToUser("thanh", CONSTANTS.ROLE_USER);
+            userService.saveUser(new User(null, "admin", "taolaso1@", "Thanh", new ArrayList<>()));
+            userService.setRoleToUser("admin", CONSTANTS.ROLE_SUPER_ADMIN);
+            userService.setRoleToUser("admin", CONSTANTS.ROLE_USER);
 
         };
     }

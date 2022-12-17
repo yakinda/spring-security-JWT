@@ -13,6 +13,7 @@ import com.thanhnguyen.security.models.Role;
 import com.thanhnguyen.security.models.User;
 import com.thanhnguyen.security.services.UserService;
 import lombok.SneakyThrows;
+import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
