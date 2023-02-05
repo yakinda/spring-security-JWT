@@ -2,11 +2,11 @@ package com.thanhnguyen.security.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thanhnguyen.security.constants.CONSTANTS;
+import com.thanhnguyen.security.dto.RoleUserDto;
 import com.thanhnguyen.security.models.Role;
 import com.thanhnguyen.security.models.User;
 import com.thanhnguyen.security.security.JWTUtils;
 import com.thanhnguyen.security.services.UserService;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -62,7 +62,7 @@ public class UserResource implements BaseController {
 
     @PreAuthorize("hasAnyAuthority('ROLE_SUPER_ADMIN')")
     @PostMapping("/role/addUser")
-    ResponseEntity<?> addRoleToUser(@RequestBody RoleUser data) {
+    ResponseEntity<?> addRoleToUser(@RequestBody RoleUserDto data) {
         userService.setRoleToUser(data.getUsername(), data.getRoleName());
         return ResponseEntity.ok().build();
     }
@@ -100,9 +100,3 @@ public class UserResource implements BaseController {
     }
 }
 
-@Data
-class RoleUser {
-    private String username;
-    private String roleName;
-
-}

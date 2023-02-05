@@ -1,12 +1,10 @@
 package com.thanhnguyen.security.dto;
 
-import com.thanhnguyen.security.models.Role;
 import com.thanhnguyen.security.models.User;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 @Getter
 @Setter
